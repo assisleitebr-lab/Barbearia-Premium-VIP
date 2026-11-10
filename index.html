@@ -4,6 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbearia VIP - Agendamentos & Gestão</title>
+    
+    <!-- Configurações PWA (Para permitir instalação no celular/PC) -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Barbearia VIP">
+    
+    <!-- Manifesto embutido via Blob para funcionar perfeitamente em arquivo único no GitHub Pages -->
+    <script>
+        const manifestData = {
+            "name": "Barbearia VIP",
+            "short_name": "BarbeariaVIP",
+            "start_url": "./index.html",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#0f172a",
+            "icons": [
+                {
+                    "src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=BarbeariaVIP",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                },
+                {
+                    "src": "https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=BarbeariaVIP",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const linkTag = document.createElement('link');
+        linkTag.rel = 'manifest';
+        linkTag.href = manifestURL;
+        document.head.appendChild(linkTag);
+    </script>
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,17 +49,8 @@
             theme: {
                 extend: {
                     colors: {
-                        gold: {
-                            400: '#facc15',
-                            500: '#eab308',
-                            600: '#ca8a04',
-                            700: '#a16207',
-                        },
-                        dark: {
-                            900: '#0f172a',
-                            800: '#1e293b',
-                            700: '#334155',
-                        }
+                        gold: { 400: '#facc15', 500: '#eab308', 600: '#ca8a04', 700: '#a16207' },
+                        dark: { 900: '#0f172a', 800: '#1e293b', 700: '#334155' }
                     }
                 }
             }
@@ -31,6 +60,25 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
+
+    <!-- BANNER DE INSTALAÇÃO PWA (Aparece se o navegador permitir instalação) -->
+    <div id="installBanner" class="hidden bg-gradient-to-r from-amber-600 to-amber-500 text-slate-950 px-4 py-3 shadow-lg sticky top-0 z-50 flex items-center justify-between font-medium">
+        <div class="flex items-center gap-3">
+            <span class="text-2xl">📱</span>
+            <div>
+                <p class="font-bold text-sm">Instalar Aplicativo Barbearia VIP</p>
+                <p class="text-xs opacity-90">Tenha acesso rápido direto na tela inicial do seu celular ou PC!</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="installPWA()" class="bg-slate-950 text-amber-400 hover:bg-slate-900 text-xs font-bold px-4 py-2 rounded-xl shadow transition">
+                Instalar Agora
+            </button>
+            <button onclick="dismissInstallBanner()" class="text-slate-950 hover:opacity-70 p-1">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
 
     <!-- BARRA SUPERIOR / HEADER -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
@@ -347,10 +395,34 @@
         <p>&copy; 2026 Barbearia VIP - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- LÓGICA EM JAVASCRIPT -->
+    <!-- LÓGICA EM JAVASCRIPT & PWA INSTALL -->
     <script>
         // CONFIGURAÇÕES E ESTADO DA APLICAÇÃO
         const ADMIN_PASSWORD_DEFAULT = "1234";
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Mostra o banner de instalação customizado
+            document.getElementById('installBanner').classList.remove('hidden');
+        });
+
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('Usuário aceitou instalar o PWA');
+                }
+                deferredPrompt = null;
+                document.getElementById('installBanner').classList.add('hidden');
+            }
+        }
+
+        function dismissInstallBanner() {
+            document.getElementById('installBanner').classList.add('hidden');
+        }
 
         // Dados padrão (Salvos no LocalStorage)
         const defaultBarbers = [
@@ -364,37 +436,30 @@
             { id: 's3', name: 'Combo VIP (Corte + Barba + Sobrancelha)', price: 70.00, time: '1h 15m' }
         ];
 
-        // Carregar do LocalStorage
         let barbers = JSON.parse(localStorage.getItem('bv_barbers')) || defaultBarbers;
         let services = defaultServices;
         let bookings = JSON.parse(localStorage.getItem('bv_bookings')) || [];
 
-        // Estado do Agendamento Atual (Cliente)
         let selectedBarberId = null;
         let selectedServiceId = null;
         let selectedDate = null;
         let selectedTime = null;
 
-        // INICIALIZAÇÃO
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            // Definir data mínima como hoje no input date
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('bookingDate').min = today;
         });
 
-        // PERSISTÊNCIA
         function saveData() {
             localStorage.setItem('bv_barbers', JSON.stringify(barbers));
             localStorage.setItem('bv_bookings', JSON.stringify(bookings));
         }
 
-        // CONTROLE DE NAVEGAÇÃO E AUTENTICAÇÃO
         function enterAsClient() {
             document.getElementById('screenAuth').classList.add('hidden');
             document.getElementById('screenClient').classList.remove('hidden');
             
-            // Atualizar Header
             const userHeader = document.getElementById('userHeaderArea');
             const badge = document.getElementById('roleBadge');
             userHeader.classList.remove('hidden');
@@ -425,7 +490,6 @@
                 document.getElementById('screenClient').classList.add('hidden');
                 document.getElementById('screenAdmin').classList.remove('hidden');
 
-                // Header
                 const userHeader = document.getElementById('userHeaderArea');
                 const badge = document.getElementById('roleBadge');
                 userHeader.classList.remove('hidden');
@@ -446,7 +510,6 @@
             closeAdminModal();
         }
 
-        // MODO CLIENTE: RENDERIZAÇÃO
         function renderClientView() {
             renderClientBarbers();
             renderClientServices();
@@ -590,7 +653,6 @@
 
             alert('🎉 Agendamento e Pagamento PIX registrados com sucesso!');
             
-            // Resetar formulário
             selectedBarberId = null;
             selectedServiceId = null;
             selectedDate = null;
@@ -630,7 +692,6 @@
             `).join('');
         }
 
-        // MODO ADMIN: RENDERIZAÇÃO
         function renderAdminView() {
             renderAdminBookings();
             renderAdminBarbers();
@@ -713,7 +774,6 @@
             barbers.push(newBarber);
             saveData();
             
-            // Limpar formulário
             document.getElementById('newBarberName').value = '';
             document.getElementById('newBarberSpec').value = '';
             document.getElementById('newBarberPhoto').value = '';
