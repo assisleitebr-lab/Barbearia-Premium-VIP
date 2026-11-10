@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Barbearia VIP">
     
-    <!-- Manifesto PWA Dinâmico -->
+    <!-- Manifesto PWA -->
     <script>
         const manifestData = {
             "name": "Barbearia VIP",
@@ -42,7 +42,7 @@
         document.head.appendChild(linkTag);
     </script>
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -58,6 +58,10 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Firebase SDKs (Sincronização em Tempo Real) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
 
@@ -80,7 +84,7 @@
         </div>
     </div>
 
-    <!-- BARRA SUPERIOR / HEADER -->
+    <!-- HEADER -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -93,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- Botão de Sair/Trocar Modo -->
             <div id="userHeaderArea" class="hidden flex items-center gap-3">
                 <span id="roleBadge" class="text-xs px-2.5 py-1 rounded-full font-semibold border"></span>
                 <button onclick="logout()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
@@ -106,7 +109,7 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6">
 
-        <!-- TELA 1: ESCOLHA DE ACESSO INICIAL -->
+        <!-- TELA 1: TELA INICIAL -->
         <section id="screenAuth" class="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl text-center">
             <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i data-lucide="user-check" class="w-8 h-8"></i>
@@ -132,7 +135,7 @@
             </div>
         </section>
 
-        <!-- MODAL DE SENHA DO ADMIN -->
+        <!-- MODAL SENHA ADMIN -->
         <div id="modalAdminAuth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
                 <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -158,7 +161,7 @@
             </div>
         </div>
 
-        <!-- TELA 2: MODO CLIENTE -->
+        <!-- TELA 2: CLIENTE -->
         <section id="screenClient" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
                 <div>
@@ -230,7 +233,7 @@
                         class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500 transition">
                 </div>
 
-                <!-- ÁREA PIX COM STATUS -->
+                <!-- PIX AREA -->
                 <div class="bg-slate-950 border border-emerald-500/20 rounded-xl p-5 text-center space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-semibold">
                         <i data-lucide="qr-code" class="w-4 h-4"></i> Pagamento via PIX
@@ -248,11 +251,10 @@
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i> <span id="btnCopyText">Copiar</span>
                         </button>
                     </div>
-                    <p class="text-xs text-amber-400 font-medium">Status do PIX: <span id="sumPixStatus" class="bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/30">Pendente de Confirmação pelo Admin</span></p>
                 </div>
 
                 <button onclick="confirmBooking()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-4 rounded-xl shadow-lg shadow-emerald-500/20 text-lg transition flex items-center justify-center gap-2">
-                    <i data-lucide="check-circle-2" class="w-6 h-6"></i> Enviar Agendamento para a Barbearia
+                    <i data-lucide="check-circle-2" class="w-6 h-6"></i> Confirmar e Enviar Agendamento
                 </button>
             </div>
         </section>
@@ -272,7 +274,7 @@
             </div>
         </div>
 
-        <!-- TELA 3: PAINEL ADMINISTRADOR -->
+        <!-- TELA 3: PAINEL ADMIN -->
         <section id="screenAdmin" class="hidden space-y-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <div>
@@ -367,18 +369,20 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
         <p>&copy; 2026 Barbearia VIP - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- LÓGICA COM SINCRONIZAÇÃO EM NUVEM (JSONBIN) -->
+    <!-- LÓGICA DE REALTIME COM FIREBASE BASE DE DADOS -->
     <script>
         const ADMIN_PASSWORD_DEFAULT = "1234";
 
-        // Configuração do JSONbin público para sincronizar celular e PC
-        const BIN_ID = "67c3b94be41b4d34e4952041"; 
-        const API_KEY = "$2a$10$T8VqQvVv4c/o3z5uX8Y1eO35Zq3v0eQvVv4c/o3z5uX8Y1eO35Zq3"; // Chave pública de testes
+        // Inicialização Banco de Dados Firebase Gratuito Realtime
+        const firebaseConfig = {
+            databaseURL: "https://barbearia-vip-app-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -390,7 +394,7 @@
         async function installPWA() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
+                await deferredPrompt.userChoice;
                 deferredPrompt = null;
                 document.getElementById('installBanner').classList.add('hidden');
             }
@@ -411,9 +415,9 @@
             { id: 's3', name: 'Combo VIP (Corte + Barba + Sobrancelha)', price: 70.00, time: '1h 15m' }
         ];
 
-        let barbers = JSON.parse(localStorage.getItem('bv_barbers')) || defaultBarbers;
+        let barbers = defaultBarbers;
         let services = defaultServices;
-        let bookings = JSON.parse(localStorage.getItem('bv_bookings')) || [];
+        let bookings = [];
 
         let selectedBarberId = null;
         let selectedServiceId = null;
@@ -424,53 +428,26 @@
             lucide.createIcons();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('bookingDate').min = today;
-            loadCloudData();
-            // Atualizar dados da nuvem a cada 5 segundos automaticamente
-            setInterval(loadCloudData, 5000);
+            
+            // ESCUTADOR EM TEMPO REAL: Sempre que alguém agendar no celular ou PC, atualiza instantaneamente em todos os aparelhos!
+            db.ref('bookings').on('value', (snapshot) => {
+                const data = snapshot.val();
+                bookings = data ? Object.values(data) : [];
+                renderAllViews();
+            });
+
+            db.ref('barbers').on('value', (snapshot) => {
+                const data = snapshot.val();
+                barbers = data ? Object.values(data) : defaultBarbers;
+                renderAllViews();
+            });
         });
 
-        // SINCRONIZAÇÃO EM NUVEM
-        async function loadCloudData() {
-            try {
-                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': '$2a$10$w8.B...exemplo' } // Fallback seguro
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.record) {
-                        if (data.record.barbers) barbers = data.record.barbers;
-                        if (data.record.bookings) bookings = data.record.bookings;
-                        
-                        // Atualizar telas ativas se houver mudanças
-                        if (!document.getElementById('screenClient').classList.contains('hidden')) {
-                            renderClientBarbers();
-                        }
-                        if (!document.getElementById('screenAdmin').classList.contains('hidden')) {
-                            renderAdminView();
-                        }
-                    }
-                }
-            } catch (e) {
-                // Se falhar a rede, usa o localStorage local como garantia
-            }
-        }
-
-        async function saveCloudData() {
-            localStorage.setItem('bv_barbers', JSON.stringify(barbers));
-            localStorage.setItem('bv_bookings', JSON.stringify(bookings));
-            
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': '$2a$10$w8.B'
-                    },
-                    body: JSON.stringify({ barbers, bookings })
-                });
-            } catch (e) {
-                console.log('Modo offline/local ativo');
-            }
+        function renderAllViews() {
+            renderClientBarbers();
+            renderClientServices();
+            renderMyBookings();
+            renderAdminView();
         }
 
         function enterAsClient() {
@@ -483,7 +460,6 @@
             badge.innerText = 'Modo Cliente';
             badge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold border bg-blue-500/10 text-blue-400 border-blue-500/30';
 
-            loadCloudData();
             renderClientView();
         }
 
@@ -514,7 +490,6 @@
                 badge.innerText = 'Painel Admin';
                 badge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold border bg-amber-500/10 text-amber-400 border-amber-500/30';
 
-                loadCloudData();
                 renderAdminView();
             } else {
                 document.getElementById('adminAuthError').classList.remove('hidden');
@@ -650,7 +625,7 @@
             setTimeout(() => { btnText.innerText = "Copiar"; }, 2000);
         }
 
-        async function confirmBooking() {
+        function confirmBooking() {
             const clientName = document.getElementById('clientNameInput').value.trim();
             if (!clientName) {
                 alert('Por favor, informe seu nome para concluir o agendamento!');
@@ -659,22 +634,23 @@
 
             const barber = barbers.find(b => b.id === selectedBarberId);
             const service = services.find(s => s.id === selectedServiceId);
+            const bookingId = Date.now().toString();
 
             const newBooking = {
-                id: Date.now().toString(),
+                id: bookingId,
                 clientName: clientName,
                 barberName: barber.name,
                 serviceName: service.name,
                 price: service.price,
                 date: selectedDate,
                 time: selectedTime,
-                pixStatus: 'Pendente' // Status inicial do PIX
+                pixStatus: 'Pendente'
             };
 
-            bookings.push(newBooking);
-            await saveCloudData();
+            // Salva diretamente na Nuvem Firebase em Tempo Real!
+            db.ref('bookings/' + bookingId).set(newBooking);
 
-            alert('🎉 Agendamento realizado com sucesso! Aguarde a confirmação do pagamento PIX pelo administrador.');
+            alert('🎉 Agendamento realizado com sucesso!');
             
             selectedBarberId = null;
             selectedServiceId = null;
@@ -714,6 +690,7 @@
                             <span class="font-bold text-white text-sm">${b.serviceName}</span>
                             ${statusBadge}
                         </div>
+                        <p class="text-xs text-slate-400">Cliente: <strong class="text-slate-200">${b.clientName}</strong></p>
                         <p class="text-xs text-slate-400">Barbeiro: <strong class="text-slate-200">${b.barberName}</strong></p>
                         <p class="text-xs text-slate-400">Data: <strong class="text-slate-200">${b.date.split('-').reverse().join('/')} às ${b.time}</strong></p>
                         <div class="text-right text-amber-400 font-bold text-sm">R$ ${b.price.toFixed(2)}</div>
@@ -783,50 +760,41 @@
             lucide.createIcons();
         }
 
-        async function updatePixStatus(id, newStatus) {
-            const b = bookings.find(item => item.id === id);
-            if (b) {
-                b.pixStatus = newStatus;
-                await saveCloudData();
-                renderAdminView();
-            }
+        function updatePixStatus(id, newStatus) {
+            db.ref('bookings/' + id + '/pixStatus').set(newStatus);
         }
 
         function calculateRevenue() {
-            // Conta apenas o faturamento dos agendamentos marcados como "Pago"
             const total = bookings.filter(b => b.pixStatus === 'Pago').reduce((sum, b) => sum + b.price, 0);
             document.getElementById('adminTotalRevenue').innerText = `R$ ${total.toFixed(2)}`;
         }
 
-        async function deleteBooking(id) {
+        function deleteBooking(id) {
             if (confirm('Deseja realmente remover este agendamento?')) {
-                bookings = bookings.filter(b => b.id !== id);
-                await saveCloudData();
-                renderAdminView();
+                db.ref('bookings/' + id).remove();
             }
         }
 
-        async function handleAddBarber(e) {
+        function handleAddBarber(e) {
             e.preventDefault();
             const name = document.getElementById('newBarberName').value.trim();
             const specialty = document.getElementById('newBarberSpec').value.trim();
             const photo = document.getElementById('newBarberPhoto').value.trim();
+            const barberId = Date.now().toString();
 
             const newBarber = {
-                id: Date.now().toString(),
+                id: barberId,
                 name,
                 specialty,
                 photo: photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
             };
 
-            barbers.push(newBarber);
-            await saveCloudData();
-            
+            db.ref('barbers/' + barberId).set(newBarber);
+
             document.getElementById('newBarberName').value = '';
             document.getElementById('newBarberSpec').value = '';
             document.getElementById('newBarberPhoto').value = '';
 
-            renderAdminBarbers();
             alert('Barbeiro adicionado com sucesso!');
         }
 
@@ -850,15 +818,13 @@
             lucide.createIcons();
         }
 
-        async function deleteBarber(id) {
+        function deleteBarber(id) {
             if (barbers.length <= 1) {
                 alert('A equipe deve ter pelo menos um barbeiro!');
                 return;
             }
             if (confirm('Remover este barbeiro da equipe?')) {
-                barbers = barbers.filter(b => b.id !== id);
-                await saveCloudData();
-                renderAdminBarbers();
+                db.ref('barbers/' + id).remove();
             }
         }
     </script>
