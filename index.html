@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Barbearia VIP">
     
-    <!-- Manifesto PWA -->
+    <!-- Manifesto PWA Dinâmico -->
     <script>
         const manifestData = {
             "name": "Barbearia VIP",
@@ -21,24 +21,14 @@
             "background_color": "#0f172a",
             "theme_color": "#0f172a",
             "icons": [
-                {
-                    "src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=BarbeariaVIP",
-                    "sizes": "192x192",
-                    "type": "image/png"
-                },
-                {
-                    "src": "https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=BarbeariaVIP",
-                    "sizes": "512x512",
-                    "type": "image/png"
-                }
+                {"src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=BarbeariaVIP", "sizes": "192x192", "type": "image/png"},
+                {"src": "https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=BarbeariaVIP", "sizes": "512x512", "type": "image/png"}
             ]
         };
-        const stringManifest = JSON.stringify(manifestData);
-        const blob = new Blob([stringManifest], {type: 'application/json'});
-        const manifestURL = URL.createObjectURL(blob);
+        const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
         const linkTag = document.createElement('link');
         linkTag.rel = 'manifest';
-        linkTag.href = manifestURL;
+        linkTag.href = URL.createObjectURL(blob);
         document.head.appendChild(linkTag);
     </script>
 
@@ -58,6 +48,8 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Estilos Personalizados -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
 
@@ -71,12 +63,8 @@
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <button onclick="installPWA()" class="bg-slate-950 text-amber-400 hover:bg-slate-900 text-xs font-bold px-4 py-2 rounded-xl shadow transition">
-                Instalar Agora
-            </button>
-            <button onclick="dismissInstallBanner()" class="text-slate-950 hover:opacity-70 p-1">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
+            <button onclick="installPWA()" class="bg-slate-950 text-amber-400 hover:bg-slate-900 text-xs font-bold px-4 py-2 rounded-xl shadow transition">Instalar Agora</button>
+            <button onclick="dismissInstallBanner()" class="text-slate-950 hover:opacity-70 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
     </div>
 
@@ -84,9 +72,7 @@
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center font-bold text-slate-950 text-xl shadow-md">
-                    ✂️
-                </div>
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center font-bold text-slate-950 text-xl shadow-md">✂️</div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight text-amber-400">BARBEARIA VIP</h1>
                     <p class="text-xs text-slate-400">Estilo & Tradição</p>
@@ -105,7 +91,7 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6">
 
-        <!-- TELA 1: IDENTIFICAÇÃO / ESCOLHA DE ACESSO -->
+        <!-- TELA 1: IDENTIFICAÇÃO / ACESSO -->
         <section id="screenAuth" class="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl text-center">
             <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i data-lucide="user-check" class="w-8 h-8"></i>
@@ -139,9 +125,7 @@
         <!-- MODAL SENHA ADMIN -->
         <div id="modalAdminAuth" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
-                <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+                <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
 
                 <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
                     <i data-lucide="lock" class="w-5 h-5 text-amber-400"></i> Acesso Restrito
@@ -154,10 +138,7 @@
                             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 transition">
                         <p id="adminAuthError" class="text-red-400 text-xs mt-1 hidden">Senha incorreta!</p>
                     </div>
-
-                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl transition">
-                        Entrar no Painel Admin
-                    </button>
+                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl transition">Entrar no Painel Admin</button>
                 </form>
             </div>
         </div>
@@ -174,28 +155,25 @@
                 </button>
             </div>
 
-            <!-- PASSO 1: Barbeiro -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <h3 class="text-md font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">1</span> 
+                    <span class="w-6 h-6 rounded-full bg-amber-500/25 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">1</span> 
                     Escolha o Profissional
                 </h3>
                 <div id="clientBarbersList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
 
-            <!-- PASSO 2: Serviço -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <h3 class="text-md font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">2</span> 
+                    <span class="w-6 h-6 rounded-full bg-amber-500/25 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">2</span> 
                     Escolha o Serviço
                 </h3>
                 <div id="clientServicesList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- PASSO 3: Data e Hora -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <h3 class="text-md font-bold text-amber-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">3</span> 
+                    <span class="w-6 h-6 rounded-full bg-amber-500/25 border border-amber-500/40 text-amber-400 flex items-center justify-center text-xs">3</span> 
                     Data e Horário
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -213,11 +191,8 @@
                 </div>
             </div>
 
-            <!-- RESUMO E PAGAMENTO PIX -->
             <div id="bookingSummaryCard" class="hidden bg-slate-900 border border-amber-500/30 rounded-2xl p-6 space-y-4">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-amber-400"></i> Resumo do Agendamento
-                </h3>
+                <h3 class="text-lg font-bold text-white flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-amber-400"></i> Resumo do Agendamento</h3>
                 
                 <div class="bg-slate-950 rounded-xl p-4 space-y-2 text-sm">
                     <div class="flex justify-between text-slate-300"><span>Barbeiro:</span> <strong id="sumBarber" class="text-white">--</strong></div>
@@ -228,7 +203,6 @@
                     </div>
                 </div>
 
-                <!-- PIX AREA -->
                 <div class="bg-slate-950 border border-emerald-500/20 rounded-xl p-5 text-center space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-semibold">
                         <i data-lucide="qr-code" class="w-4 h-4"></i> Pagamento via PIX
@@ -254,17 +228,11 @@
             </div>
         </section>
 
-        <!-- MODAL MEUS AGENDAMENTOS (EXCLUSIVO DO CLIENTE LOGADO) -->
+        <!-- MODAL MEUS AGENDAMENTOS PRIVADOS -->
         <div id="modalMyBookings" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
-                <button onclick="switchClientTab('booking')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-5 h-5 text-amber-400"></i> Meus Agendamentos Privados
-                </h3>
-
+                <button onclick="switchClientTab('booking')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-5 h-5 text-amber-400"></i> Meus Agendamentos Privados</h3>
                 <div id="myBookingsList" class="overflow-y-auto space-y-3 flex-1 pr-1"></div>
             </div>
         </div>
@@ -273,12 +241,9 @@
         <section id="screenAdmin" class="hidden space-y-6">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase border border-amber-500/30">Painel de Gestão</span>
-                    </div>
-                    <h2 class="text-2xl font-bold text-white">Administração da Barbearia</h2>
+                    <span class="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase border border-amber-500/30">Painel de Gestão</span>
+                    <h2 class="text-2xl font-bold text-white mt-1">Administração da Barbearia</h2>
                 </div>
-
                 <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center gap-4">
                     <div class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
                         <i data-lucide="dollar-sign" class="w-5 h-5"></i>
@@ -291,22 +256,16 @@
             </div>
 
             <div class="flex border-b border-slate-800 space-x-4">
-                <button onclick="switchAdminTab('bookings')" id="tabBtnBookings" class="pb-3 text-sm font-semibold border-b-2 border-amber-400 text-amber-400 flex items-center gap-2">
-                    <i data-lucide="list" class="w-4 h-4"></i> Agendamentos Recebidos
-                </button>
-                <button onclick="switchAdminTab('barbers')" id="tabBtnBarbers" class="pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-white flex items-center gap-2">
-                    <i data-lucide="users" class="w-4 h-4"></i> Equipe de Barbeiros
-                </button>
+                <button onclick="switchAdminTab('bookings')" id="tabBtnBookings" class="pb-3 text-sm font-semibold border-b-2 border-amber-400 text-amber-400 flex items-center gap-2"><i data-lucide="list" class="w-4 h-4"></i> Agendamentos Recebidos</button>
+                <button onclick="switchAdminTab('barbers')" id="tabBtnBarbers" class="pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-white flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i> Equipe de Barbeiros</button>
             </div>
 
-            <!-- TAB AGENDAMENTOS -->
             <div id="adminTabBookings" class="space-y-4">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                     <div class="p-4 border-b border-slate-800 flex justify-between items-center">
                         <h3 class="font-bold text-white text-md">Lista de Horários Agendados (Visão Admin)</h3>
                         <span id="bookingCountBadge" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full">0 agendamentos</span>
                     </div>
-
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-slate-300">
                             <thead class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800">
@@ -326,32 +285,24 @@
                 </div>
             </div>
 
-            <!-- TAB BARBEIROS -->
             <div id="adminTabBarbers" class="hidden space-y-6">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                    <h3 class="font-bold text-white text-md mb-4 flex items-center gap-2">
-                        <i data-lucide="user-plus" class="w-5 h-5 text-amber-400"></i> Cadastrar Novo Barbeiro
-                    </h3>
+                    <h3 class="font-bold text-white text-md mb-4 flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5 text-amber-400"></i> Cadastrar Novo Barbeiro</h3>
                     <form onsubmit="handleAddBarber(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-slate-400 text-xs mb-1">Nome do Barbeiro</label>
-                            <input type="text" id="newBarberName" required placeholder="Ex: Ricardo Silva"
-                                class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="newBarberName" required placeholder="Ex: Ricardo Silva" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                         </div>
                         <div>
                             <label class="block text-slate-400 text-xs mb-1">Especialidade</label>
-                            <input type="text" id="newBarberSpec" required placeholder="Ex: Fade & Barba Terápica"
-                                class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                            <input type="text" id="newBarberSpec" required placeholder="Ex: Fade & Barba" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                         </div>
                         <div>
-                            <label class="block text-slate-400 text-xs mb-1">URL da Foto (opcional)</label>
-                            <input type="url" id="newBarberPhoto" placeholder="https://..."
-                                class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                            <label class="block text-slate-400 text-xs mb-1">URL da Foto</label>
+                            <input type="url" id="newBarberPhoto" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                         </div>
                         <div class="md:col-span-3">
-                            <button type="submit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition flex items-center gap-2 text-sm">
-                                <i data-lucide="plus" class="w-4 h-4"></i> Adicionar Barbeiro
-                            </button>
+                            <button type="submit" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl transition flex items-center gap-2 text-sm"><i data-lucide="plus" class="w-4 h-4"></i> Adicionar Barbeiro</button>
                         </div>
                     </form>
                 </div>
@@ -368,475 +319,7 @@
         <p>&copy; 2026 Barbearia VIP - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- LÓGICA JAVASCRIPT ROBUSTA -->
-    <script>
-        const ADMIN_PASSWORD_DEFAULT = "1234";
-
-        let currentClientName = "";
-        let deferredPrompt;
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').classList.remove('hidden');
-        });
-
-        async function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                document.getElementById('installBanner').classList.add('hidden');
-            }
-        }
-
-        function dismissInstallBanner() {
-            document.getElementById('installBanner').classList.add('hidden');
-        }
-
-        const defaultBarbers = [
-            { id: '1', name: 'Lucas "Tesoura de Ouro"', specialty: 'Degradê & Barba', photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-            { id: '2', name: 'Gabriel Santos', specialty: 'Cortes Clássicos & Navalha', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' }
-        ];
-
-        const defaultServices = [
-            { id: 's1', name: 'Corte Tradicional / Fade', price: 45.00, time: '45 min' },
-            { id: 's2', name: 'Barba Completa com Toalha Quente', price: 35.00, time: '30 min' },
-            { id: 's3', name: 'Combo VIP (Corte + Barba + Sobrancelha)', price: 70.00, time: '1h 15m' }
-        ];
-
-        let barbers = JSON.parse(localStorage.getItem('bv_barbers')) || defaultBarbers;
-        let services = defaultServices;
-        let bookings = JSON.parse(localStorage.getItem('bv_bookings')) || [];
-
-        let selectedBarberId = null;
-        let selectedServiceId = null;
-        let selectedDate = null;
-        let selectedTime = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('bookingDate').min = today;
-            renderAllViews();
-        });
-
-        function saveData() {
-            localStorage.setItem('bv_barbers', JSON.stringify(barbers));
-            localStorage.setItem('bv_bookings', JSON.stringify(bookings));
-            renderAllViews();
-        }
-
-        function renderAllViews() {
-            renderClientBarbers();
-            renderClientServices();
-            renderMyBookings();
-            renderAdminView();
-        }
-
-        function enterAsClient() {
-            const nameInput = document.getElementById('clientLoginName').value.trim();
-            if (!nameInput) {
-                alert('Por favor, digite o seu nome para entrar como cliente!');
-                document.getElementById('clientLoginName').focus();
-                return;
-            }
-
-            currentClientName = nameInput;
-            document.getElementById('displayClientName').innerText = currentClientName;
-
-            document.getElementById('screenAuth').classList.add('hidden');
-            document.getElementById('screenClient').classList.remove('hidden');
-            
-            const userHeader = document.getElementById('userHeaderArea');
-            const badge = document.getElementById('roleBadge');
-            userHeader.classList.remove('hidden');
-            badge.innerText = `Cliente: ${currentClientName}`;
-            badge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold border bg-blue-500/10 text-blue-400 border-blue-500/30';
-
-            renderClientView();
-        }
-
-        function openAdminModal() {
-            document.getElementById('modalAdminAuth').classList.remove('hidden');
-            document.getElementById('adminPasswordInput').focus();
-        }
-
-        function closeAdminModal() {
-            document.getElementById('modalAdminAuth').classList.add('hidden');
-            document.getElementById('adminAuthError').classList.add('hidden');
-            document.getElementById('adminPasswordInput').value = '';
-        }
-
-        function handleAdminLogin(e) {
-            e.preventDefault();
-            const pass = document.getElementById('adminPasswordInput').value;
-            
-            if (pass === ADMIN_PASSWORD_DEFAULT) {
-                closeAdminModal();
-                document.getElementById('screenAuth').classList.add('hidden');
-                document.getElementById('screenClient').classList.add('hidden');
-                document.getElementById('screenAdmin').classList.remove('hidden');
-
-                const userHeader = document.getElementById('userHeaderArea');
-                const badge = document.getElementById('roleBadge');
-                userHeader.classList.remove('hidden');
-                badge.innerText = 'Painel Admin';
-                badge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold border bg-amber-500/10 text-amber-400 border-amber-500/30';
-
-                renderAdminView();
-            } else {
-                document.getElementById('adminAuthError').classList.remove('hidden');
-            }
-        }
-
-        function logout() {
-            currentClientName = "";
-            document.getElementById('clientLoginName').value = "";
-            document.getElementById('screenAuth').classList.remove('hidden');
-            document.getElementById('screenClient').classList.add('hidden');
-            document.getElementById('screenAdmin').classList.add('hidden');
-            document.getElementById('userHeaderArea').classList.add('hidden');
-            closeAdminModal();
-        }
-
-        function renderClientView() {
-            renderClientBarbers();
-            renderClientServices();
-        }
-
-        function renderClientBarbers() {
-            const container = document.getElementById('clientBarbersList');
-            if(!container) return;
-            container.innerHTML = barbers.map(b => `
-                <div onclick="selectBarber('${b.id}')" id="barber-card-${b.id}"
-                    class="p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex items-center gap-4">
-                    <img src="${b.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}" class="w-14 h-14 rounded-full object-cover border border-slate-700">
-                    <div>
-                        <h4 class="font-bold text-white text-sm">${b.name}</h4>
-                        <p class="text-xs text-amber-400 mt-0.5">${b.specialty}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderClientServices() {
-            const container = document.getElementById('clientServicesList');
-            if(!container) return;
-            container.innerHTML = services.map(s => `
-                <div onclick="selectService('${s.id}')" id="service-card-${s.id}"
-                    class="p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex justify-between items-center">
-                    <div>
-                        <h4 class="font-bold text-white text-sm">${s.name}</h4>
-                        <p class="text-xs text-slate-400 mt-1">Duração: ${s.time}</p>
-                    </div>
-                    <span class="text-amber-400 font-bold text-base">R$ ${s.price.toFixed(2)}</span>
-                </div>
-            `).join('');
-        }
-
-        function selectBarber(id) {
-            selectedBarberId = id;
-            barbers.forEach(b => {
-                const el = document.getElementById(`barber-card-${b.id}`);
-                if (el) {
-                    if (b.id === id) {
-                        el.className = "p-4 rounded-xl border-2 border-amber-500 bg-amber-500/10 cursor-pointer transition flex items-center gap-4 shadow-lg shadow-amber-500/10";
-                    } else {
-                        el.className = "p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex items-center gap-4";
-                    }
-                }
-            });
-            checkSummaryVisibility();
-        }
-
-        function selectService(id) {
-            selectedServiceId = id;
-            services.forEach(s => {
-                const el = document.getElementById(`service-card-${s.id}`);
-                if (el) {
-                    if (s.id === id) {
-                        el.className = "p-4 rounded-xl border-2 border-amber-500 bg-amber-500/10 cursor-pointer transition flex justify-between items-center shadow-lg shadow-amber-500/10";
-                    } else {
-                        el.className = "p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex justify-between items-center";
-                    }
-                }
-            });
-            checkSummaryVisibility();
-        }
-
-        function renderTimeSlots() {
-            const dateInput = document.getElementById('bookingDate').value;
-            selectedDate = dateInput;
-            const container = document.getElementById('timeSlotsList');
-
-            if (!dateInput) return;
-
-            const slots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-            
-            container.innerHTML = slots.map(slot => `
-                <button onclick="selectTime('${slot}')" id="time-btn-${slot.replace(':', '')}"
-                    class="py-2 px-3 rounded-lg border border-slate-800 bg-slate-950 text-xs font-semibold text-slate-300 hover:border-amber-500 transition">
-                    ${slot}
-                </button>
-            `).join('');
-
-            checkSummaryVisibility();
-        }
-
-        function selectTime(slot) {
-            selectedTime = slot;
-            const slots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-            slots.forEach(s => {
-                const btn = document.getElementById(`time-btn-${s.replace(':', '')}`);
-                if (btn) {
-                    if (s === slot) {
-                        btn.className = "py-2 px-3 rounded-lg border-2 border-amber-500 bg-amber-500 text-slate-950 font-bold text-xs transition";
-                    } else {
-                        btn.className = "py-2 px-3 rounded-lg border border-slate-800 bg-slate-950 text-xs font-semibold text-slate-300 hover:border-amber-500 transition";
-                    }
-                }
-            });
-            checkSummaryVisibility();
-        }
-
-        function checkSummaryVisibility() {
-            const summary = document.getElementById('bookingSummaryCard');
-            if (selectedBarberId && selectedServiceId && selectedDate && selectedTime) {
-                const barber = barbers.find(b => b.id === selectedBarberId);
-                const service = services.find(s => s.id === selectedServiceId);
-
-                document.getElementById('sumBarber').innerText = barber ? barber.name : '';
-                document.getElementById('sumService').innerText = service ? service.name : '';
-                document.getElementById('sumDateTime').innerText = `${selectedDate.split('-').reverse().join('/')} às ${selectedTime}`;
-                document.getElementById('sumPrice').innerText = service ? `R$ ${service.price.toFixed(2)}` : '';
-
-                summary.classList.remove('hidden');
-                summary.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        function copyPixKey() {
-            navigator.clipboard.writeText("00020126580014BR.GOV.BCB.PIX0136barbearia-vip-key-exemplo-pix");
-            const btnText = document.getElementById('btnCopyText');
-            btnText.innerText = "Copiado!";
-            setTimeout(() => { btnText.innerText = "Copiar"; }, 2000);
-        }
-
-        function confirmBooking() {
-            if (!currentClientName) {
-                alert('Nome do cliente não identificado. Faça login novamente.');
-                return;
-            }
-
-            const barber = barbers.find(b => b.id === selectedBarberId);
-            const service = services.find(s => s.id === selectedServiceId);
-            const bookingId = Date.now().toString();
-
-            const newBooking = {
-                id: bookingId,
-                clientName: currentClientName,
-                barberName: barber.name,
-                serviceName: service.name,
-                price: service.price,
-                date: selectedDate,
-                time: selectedTime,
-                pixStatus: 'Pendente'
-            };
-
-            bookings.push(newBooking);
-            saveData();
-
-            alert('🎉 Agendamento realizado com sucesso!');
-            
-            selectedBarberId = null;
-            selectedServiceId = null;
-            selectedDate = null;
-            selectedTime = null;
-            document.getElementById('bookingSummaryCard').classList.add('hidden');
-            renderClientView();
-        }
-
-        function switchClientTab(tab) {
-            const modal = document.getElementById('modalMyBookings');
-            if (tab === 'myBookings') {
-                renderMyBookings();
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-            }
-        }
-
-        // Privacidade: O cliente apenas vê os agendamentos feitos no nome dele
-        function renderMyBookings() {
-            const container = document.getElementById('myBookingsList');
-            if (!container) return;
-
-            const myBookings = bookings.filter(b => b.clientName.toLowerCase() === currentClientName.toLowerCase());
-
-            if (myBookings.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 text-sm text-center py-6">Você não possui nenhum agendamento registrado.</p>`;
-                return;
-            }
-
-            container.innerHTML = myBookings.slice().reverse().map(b => {
-                const isPaid = b.pixStatus === 'Pago';
-                const statusBadge = isPaid 
-                    ? `<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-semibold">PIX: Pago ✅</span>`
-                    : `<span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">PIX: Pendente ⏳</span>`;
-
-                return `
-                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-1.5">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white text-sm">${b.serviceName}</span>
-                            ${statusBadge}
-                        </div>
-                        <p class="text-xs text-slate-400">Barbeiro: <strong class="text-slate-200">${b.barberName}</strong></p>
-                        <p class="text-xs text-slate-400">Data: <strong class="text-slate-200">${b.date.split('-').reverse().join('/')} às ${b.time}</strong></p>
-                        <div class="text-right text-amber-400 font-bold text-sm">R$ ${b.price.toFixed(2)}</div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderAdminView() {
-            renderAdminBookings();
-            renderAdminBarbers();
-            calculateRevenue();
-        }
-
-        function switchAdminTab(tab) {
-            const tabBookings = document.getElementById('adminTabBookings');
-            const tabBarbers = document.getElementById('adminTabBarbers');
-            const btnBookings = document.getElementById('tabBtnBookings');
-            const btnBarbers = document.getElementById('tabBtnBarbers');
-
-            if (tab === 'bookings') {
-                tabBookings.classList.remove('hidden');
-                tabBarbers.classList.add('hidden');
-                btnBookings.className = "pb-3 text-sm font-semibold border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
-                btnBarbers.className = "pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-white flex items-center gap-2";
-            } else {
-                tabBookings.classList.add('hidden');
-                tabBarbers.classList.remove('hidden');
-                btnBarbers.className = "pb-3 text-sm font-semibold border-b-2 border-amber-400 text-amber-400 flex items-center gap-2";
-                btnBookings.className = "pb-3 text-sm font-semibold text-slate-400 border-b-2 border-transparent hover:text-white flex items-center gap-2";
-            }
-        }
-
-        function renderAdminBookings() {
-            const table = document.getElementById('adminBookingsTable');
-            if(!table) return;
-            document.getElementById('bookingCountBadge').innerText = `${bookings.length} agendamentos`;
-
-            if (bookings.length === 0) {
-                table.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500">Nenhum agendamento registrado.</td></tr>`;
-                return;
-            }
-
-            table.innerHTML = bookings.slice().reverse().map(b => {
-                const isPaid = b.pixStatus === 'Pago';
-                return `
-                    <tr class="hover:bg-slate-800/40 transition">
-                        <td class="p-4 font-semibold text-white">${b.clientName}</td>
-                        <td class="p-4">${b.barberName}</td>
-                        <td class="p-4">${b.serviceName}</td>
-                        <td class="p-4">${b.date.split('-').reverse().join('/')} às ${b.time}</td>
-                        <td class="p-4 text-amber-400 font-bold">R$ ${b.price.toFixed(2)}</td>
-                        <td class="p-4">
-                            <select onchange="updatePixStatus('${b.id}', this.value)" class="bg-slate-950 border ${isPaid ? 'border-emerald-500/50 text-emerald-400' : 'border-amber-500/50 text-amber-400'} text-xs font-semibold rounded-lg px-2.5 py-1.5 focus:outline-none">
-                                <option value="Pendente" ${!isPaid ? 'selected' : ''}>Pendente ⏳</option>
-                                <option value="Pago" ${isPaid ? 'selected' : ''}>Pago ✅</option>
-                            </select>
-                        </td>
-                        <td class="p-4 text-right">
-                            <button onclick="deleteBooking('${b.id}')" class="text-red-400 hover:text-red-300 p-1 rounded transition">
-                                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-            
-            lucide.createIcons();
-        }
-
-        function updatePixStatus(id, newStatus) {
-            const b = bookings.find(item => item.id === id);
-            if (b) {
-                b.pixStatus = newStatus;
-                saveData();
-            }
-        }
-
-        function calculateRevenue() {
-            const total = bookings.filter(b => b.pixStatus === 'Pago').reduce((sum, b) => sum + b.price, 0);
-            const revEl = document.getElementById('adminTotalRevenue');
-            if(revEl) revEl.innerText = `R$ ${total.toFixed(2)}`;
-        }
-
-        function deleteBooking(id) {
-            if (confirm('Deseja realmente remover este agendamento?')) {
-                bookings = bookings.filter(b => b.id !== id);
-                saveData();
-            }
-        }
-
-        function handleAddBarber(e) {
-            e.preventDefault();
-            const name = document.getElementById('newBarberName').value.trim();
-            const specialty = document.getElementById('newBarberSpec').value.trim();
-            const photo = document.getElementById('newBarberPhoto').value.trim();
-            const barberId = Date.now().toString();
-
-            const newBarber = {
-                id: barberId,
-                name,
-                specialty,
-                photo: photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-            };
-
-            barbers.push(newBarber);
-            saveData();
-
-            document.getElementById('newBarberName').value = '';
-            document.getElementById('newBarberSpec').value = '';
-            document.getElementById('newBarberPhoto').value = '';
-
-            alert('Barbeiro adicionado com sucesso!');
-        }
-
-        function renderAdminBarbers() {
-            const container = document.getElementById('adminBarbersGrid');
-            if(!container) return;
-            container.innerHTML = barbers.map(b => `
-                <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <img src="${b.photo}" class="w-12 h-12 rounded-full object-cover border border-slate-700">
-                        <div>
-                            <h4 class="font-bold text-white text-sm">${b.name}</h4>
-                            <p class="text-xs text-amber-400">${b.specialty}</p>
-                        </div>
-                    </div>
-                    <button onclick="deleteBarber('${b.id}')" class="text-slate-500 hover:text-red-400 transition p-1">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `).join('');
-            
-            lucide.createIcons();
-        }
-
-        function deleteBarber(id) {
-            if (barbers.length <= 1) {
-                alert('A equipe deve ter pelo menos um barbeiro!');
-                return;
-            }
-            if (confirm('Remover este barbeiro da equipe?')) {
-                barbers = barbers.filter(b => b.id !== id);
-                saveData();
-            }
-        }
-    </script>
+    <!-- Script Principal -->
+    <script src="app.js"></script>
 </body>
 </html>
