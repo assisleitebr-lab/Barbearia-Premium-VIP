@@ -59,7 +59,7 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Firebase SDKs (Sincronização em Tempo Real) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -109,19 +109,24 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6">
 
-        <!-- TELA 1: TELA INICIAL -->
+        <!-- TELA 1: IDENTIFICAÇÃO / ESCOLHA DE ACESSO -->
         <section id="screenAuth" class="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 shadow-2xl text-center">
             <div class="w-16 h-16 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
                 <i data-lucide="user-check" class="w-8 h-8"></i>
             </div>
             <h2 class="text-2xl font-bold text-white mb-2">Bem-vindo à Barbearia VIP</h2>
-            <p class="text-slate-400 text-sm mb-6">Como deseja acessar a plataforma hoje?</p>
+            <p class="text-slate-400 text-sm mb-6">Informe seu nome e como deseja acessar:</p>
 
             <div class="space-y-4">
-                <button onclick="enterAsClient()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/10 transition flex items-center justify-center gap-2 group">
-                    <i data-lucide="scissors" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
-                    Entrar como Cliente (Agendar Horário)
-                </button>
+                <div>
+                    <input type="text" id="clientLoginName" placeholder="Seu Nome Completo (para clientes)" 
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-center placeholder-slate-500 focus:outline-none focus:border-amber-500 transition mb-3">
+                    
+                    <button onclick="enterAsClient()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/10 transition flex items-center justify-center gap-2 group">
+                        <i data-lucide="scissors" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                        Entrar como Cliente (Agendar)
+                    </button>
+                </div>
 
                 <div class="relative my-4">
                     <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
@@ -130,7 +135,7 @@
 
                 <button onclick="openAdminModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-3 px-4 rounded-xl border border-slate-700 transition flex items-center justify-center gap-2">
                     <i data-lucide="shield-check" class="w-5 h-5 text-amber-400"></i>
-                    Área do Administrador / Barbeiro
+                    Painel do Administrador / Barbeiro
                 </button>
             </div>
         </section>
@@ -165,7 +170,7 @@
         <section id="screenClient" class="hidden space-y-6">
             <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border border-slate-800 rounded-2xl p-6 flex items-center justify-between">
                 <div>
-                    <h2 class="text-xl font-bold text-white mb-1">Olá, Cliente VIP! 👋</h2>
+                    <h2 class="text-xl font-bold text-white mb-1">Olá, <span id="displayClientName" class="text-amber-400"></span>! 👋</h2>
                     <p class="text-slate-400 text-sm">Escolha os detalhes do seu agendamento abaixo.</p>
                 </div>
                 <button onclick="switchClientTab('myBookings')" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 transition">
@@ -227,12 +232,6 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-slate-400 text-xs font-semibold uppercase mb-1">Seu Nome Completo</label>
-                    <input type="text" id="clientNameInput" placeholder="Digite seu nome para o agendamento"
-                        class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500 transition">
-                </div>
-
                 <!-- PIX AREA -->
                 <div class="bg-slate-950 border border-emerald-500/20 rounded-xl p-5 text-center space-y-3">
                     <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-semibold">
@@ -259,7 +258,7 @@
             </div>
         </section>
 
-        <!-- MODAL MEUS AGENDAMENTOS -->
+        <!-- MODAL MEUS AGENDAMENTOS (EXCLUSIVO DO CLIENTE LOGADO) -->
         <div id="modalMyBookings" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
                 <button onclick="switchClientTab('booking')" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -267,7 +266,7 @@
                 </button>
 
                 <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <i data-lucide="calendar" class="w-5 h-5 text-amber-400"></i> Meus Agendamentos
+                    <i data-lucide="calendar" class="w-5 h-5 text-amber-400"></i> Meus Agendamentos Privados
                 </h3>
 
                 <div id="myBookingsList" class="overflow-y-auto space-y-3 flex-1 pr-1"></div>
@@ -308,7 +307,7 @@
             <div id="adminTabBookings" class="space-y-4">
                 <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
                     <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-                        <h3 class="font-bold text-white text-md">Lista de Horários Agendados</h3>
+                        <h3 class="font-bold text-white text-md">Lista de Horários Agendados (Visão Admin)</h3>
                         <span id="bookingCountBadge" class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full">0 agendamentos</span>
                     </div>
 
@@ -373,18 +372,19 @@
         <p>&copy; 2026 Barbearia VIP - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- LÓGICA DE REALTIME COM FIREBASE BASE DE DADOS -->
+    <!-- LÓGICA JAVASCRIPT CORRIGIDA -->
     <script>
         const ADMIN_PASSWORD_DEFAULT = "1234";
 
-        // Inicialização Banco de Dados Firebase Gratuito Realtime
         const firebaseConfig = {
             databaseURL: "https://barbearia-vip-app-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        let currentClientName = "";
         let deferredPrompt;
+        
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -429,7 +429,7 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('bookingDate').min = today;
             
-            // ESCUTADOR EM TEMPO REAL: Sempre que alguém agendar no celular ou PC, atualiza instantaneamente em todos os aparelhos!
+            // Sincronização automática em tempo real do Firebase
             db.ref('bookings').on('value', (snapshot) => {
                 const data = snapshot.val();
                 bookings = data ? Object.values(data) : [];
@@ -451,13 +451,23 @@
         }
 
         function enterAsClient() {
+            const nameInput = document.getElementById('clientLoginName').value.trim();
+            if (!nameInput) {
+                alert('Por favor, digite o seu nome para entrar como cliente!');
+                document.getElementById('clientLoginName').focus();
+                return;
+            }
+
+            currentClientName = nameInput;
+            document.getElementById('displayClientName').innerText = currentClientName;
+
             document.getElementById('screenAuth').classList.add('hidden');
             document.getElementById('screenClient').classList.remove('hidden');
             
             const userHeader = document.getElementById('userHeaderArea');
             const badge = document.getElementById('roleBadge');
             userHeader.classList.remove('hidden');
-            badge.innerText = 'Modo Cliente';
+            badge.innerText = `Cliente: ${currentClientName}`;
             badge.className = 'text-xs px-2.5 py-1 rounded-full font-semibold border bg-blue-500/10 text-blue-400 border-blue-500/30';
 
             renderClientView();
@@ -497,6 +507,8 @@
         }
 
         function logout() {
+            currentClientName = "";
+            document.getElementById('clientLoginName').value = "";
             document.getElementById('screenAuth').classList.remove('hidden');
             document.getElementById('screenClient').classList.add('hidden');
             document.getElementById('screenAdmin').classList.add('hidden');
@@ -511,6 +523,7 @@
 
         function renderClientBarbers() {
             const container = document.getElementById('clientBarbersList');
+            if(!container) return;
             container.innerHTML = barbers.map(b => `
                 <div onclick="selectBarber('${b.id}')" id="barber-card-${b.id}"
                     class="p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex items-center gap-4">
@@ -525,6 +538,7 @@
 
         function renderClientServices() {
             const container = document.getElementById('clientServicesList');
+            if(!container) return;
             container.innerHTML = services.map(s => `
                 <div onclick="selectService('${s.id}')" id="service-card-${s.id}"
                     class="p-4 rounded-xl border border-slate-800 bg-slate-950/60 hover:border-amber-500/50 cursor-pointer transition flex justify-between items-center">
@@ -626,9 +640,8 @@
         }
 
         function confirmBooking() {
-            const clientName = document.getElementById('clientNameInput').value.trim();
-            if (!clientName) {
-                alert('Por favor, informe seu nome para concluir o agendamento!');
+            if (!currentClientName) {
+                alert('Nome do cliente não identificado. Faça login novamente.');
                 return;
             }
 
@@ -638,7 +651,7 @@
 
             const newBooking = {
                 id: bookingId,
-                clientName: clientName,
+                clientName: currentClientName, // Vincula diretamente ao nome digitado
                 barberName: barber.name,
                 serviceName: service.name,
                 price: service.price,
@@ -647,7 +660,6 @@
                 pixStatus: 'Pendente'
             };
 
-            // Salva diretamente na Nuvem Firebase em Tempo Real!
             db.ref('bookings/' + bookingId).set(newBooking);
 
             alert('🎉 Agendamento realizado com sucesso!');
@@ -656,7 +668,6 @@
             selectedServiceId = null;
             selectedDate = null;
             selectedTime = null;
-            document.getElementById('clientNameInput').value = '';
             document.getElementById('bookingSummaryCard').classList.add('hidden');
             renderClientView();
         }
@@ -671,14 +682,20 @@
             }
         }
 
+        // SEGURANÇA / PRIVACIDADE: O cliente só enxerga os agendamentos dele próprio!
         function renderMyBookings() {
             const container = document.getElementById('myBookingsList');
-            if (bookings.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 text-sm text-center py-6">Nenhum agendamento realizado ainda.</p>`;
+            if (!container) return;
+
+            // Filtra estritamente pelo nome do cliente logado atualmente
+            const myBookings = bookings.filter(b => b.clientName.toLowerCase() === currentClientName.toLowerCase());
+
+            if (myBookings.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-sm text-center py-6">Você não possui nenhum agendamento registrado.</p>`;
                 return;
             }
 
-            container.innerHTML = bookings.slice().reverse().map(b => {
+            container.innerHTML = myBookings.slice().reverse().map(b => {
                 const isPaid = b.pixStatus === 'Pago';
                 const statusBadge = isPaid 
                     ? `<span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-semibold">PIX: Pago ✅</span>`
@@ -690,7 +707,6 @@
                             <span class="font-bold text-white text-sm">${b.serviceName}</span>
                             ${statusBadge}
                         </div>
-                        <p class="text-xs text-slate-400">Cliente: <strong class="text-slate-200">${b.clientName}</strong></p>
                         <p class="text-xs text-slate-400">Barbeiro: <strong class="text-slate-200">${b.barberName}</strong></p>
                         <p class="text-xs text-slate-400">Data: <strong class="text-slate-200">${b.date.split('-').reverse().join('/')} às ${b.time}</strong></p>
                         <div class="text-right text-amber-400 font-bold text-sm">R$ ${b.price.toFixed(2)}</div>
@@ -726,6 +742,7 @@
 
         function renderAdminBookings() {
             const table = document.getElementById('adminBookingsTable');
+            if(!table) return;
             document.getElementById('bookingCountBadge').innerText = `${bookings.length} agendamentos`;
 
             if (bookings.length === 0) {
@@ -766,7 +783,8 @@
 
         function calculateRevenue() {
             const total = bookings.filter(b => b.pixStatus === 'Pago').reduce((sum, b) => sum + b.price, 0);
-            document.getElementById('adminTotalRevenue').innerText = `R$ ${total.toFixed(2)}`;
+            const revEl = document.getElementById('adminTotalRevenue');
+            if(revEl) revEl.innerText = `R$ ${total.toFixed(2)}`;
         }
 
         function deleteBooking(id) {
@@ -800,6 +818,7 @@
 
         function renderAdminBarbers() {
             const container = document.getElementById('adminBarbersGrid');
+            if(!container) return;
             container.innerHTML = barbers.map(b => `
                 <div class="p-4 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-between">
                     <div class="flex items-center gap-3">
