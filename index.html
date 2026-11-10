@@ -58,10 +58,6 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
 
@@ -71,7 +67,7 @@
             <span class="text-2xl">📱</span>
             <div>
                 <p class="font-bold text-sm">Instalar Aplicativo Barbearia VIP</p>
-                <p class="text-xs opacity-90">Tenha acesso rápido direto na tela inicial do seu celular ou PC!</p>
+                <p class="text-xs opacity-90">Tenha acesso rápido direto na tela inicial do seu telemóvel ou PC!</p>
             </div>
         </div>
         <div class="flex items-center gap-2">
@@ -115,11 +111,11 @@
                 <i data-lucide="user-check" class="w-8 h-8"></i>
             </div>
             <h2 class="text-2xl font-bold text-white mb-2">Bem-vindo à Barbearia VIP</h2>
-            <p class="text-slate-400 text-sm mb-6">Informe seu nome e como deseja acessar:</p>
+            <p class="text-slate-400 text-sm mb-6">Informe o seu nome e como deseja acessar:</p>
 
             <div class="space-y-4">
                 <div>
-                    <input type="text" id="clientLoginName" placeholder="Seu Nome Completo (para clientes)" 
+                    <input type="text" id="clientLoginName" placeholder="O seu Nome Completo (para clientes)" 
                         class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white text-center placeholder-slate-500 focus:outline-none focus:border-amber-500 transition mb-3">
                     
                     <button onclick="enterAsClient()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/10 transition flex items-center justify-center gap-2 group">
@@ -372,15 +368,9 @@
         <p>&copy; 2026 Barbearia VIP - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- LÓGICA JAVASCRIPT CORRIGIDA -->
+    <!-- LÓGICA JAVASCRIPT ROBUSTA -->
     <script>
         const ADMIN_PASSWORD_DEFAULT = "1234";
-
-        const firebaseConfig = {
-            databaseURL: "https://barbearia-vip-app-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
 
         let currentClientName = "";
         let deferredPrompt;
@@ -415,9 +405,9 @@
             { id: 's3', name: 'Combo VIP (Corte + Barba + Sobrancelha)', price: 70.00, time: '1h 15m' }
         ];
 
-        let barbers = defaultBarbers;
+        let barbers = JSON.parse(localStorage.getItem('bv_barbers')) || defaultBarbers;
         let services = defaultServices;
-        let bookings = [];
+        let bookings = JSON.parse(localStorage.getItem('bv_bookings')) || [];
 
         let selectedBarberId = null;
         let selectedServiceId = null;
@@ -428,20 +418,14 @@
             lucide.createIcons();
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('bookingDate').min = today;
-            
-            // Sincronização automática em tempo real do Firebase
-            db.ref('bookings').on('value', (snapshot) => {
-                const data = snapshot.val();
-                bookings = data ? Object.values(data) : [];
-                renderAllViews();
-            });
-
-            db.ref('barbers').on('value', (snapshot) => {
-                const data = snapshot.val();
-                barbers = data ? Object.values(data) : defaultBarbers;
-                renderAllViews();
-            });
+            renderAllViews();
         });
+
+        function saveData() {
+            localStorage.setItem('bv_barbers', JSON.stringify(barbers));
+            localStorage.setItem('bv_bookings', JSON.stringify(bookings));
+            renderAllViews();
+        }
 
         function renderAllViews() {
             renderClientBarbers();
@@ -651,7 +635,7 @@
 
             const newBooking = {
                 id: bookingId,
-                clientName: currentClientName, // Vincula diretamente ao nome digitado
+                clientName: currentClientName,
                 barberName: barber.name,
                 serviceName: service.name,
                 price: service.price,
@@ -660,7 +644,8 @@
                 pixStatus: 'Pendente'
             };
 
-            db.ref('bookings/' + bookingId).set(newBooking);
+            bookings.push(newBooking);
+            saveData();
 
             alert('🎉 Agendamento realizado com sucesso!');
             
@@ -682,12 +667,11 @@
             }
         }
 
-        // SEGURANÇA / PRIVACIDADE: O cliente só enxerga os agendamentos dele próprio!
+        // Privacidade: O cliente apenas vê os agendamentos feitos no nome dele
         function renderMyBookings() {
             const container = document.getElementById('myBookingsList');
             if (!container) return;
 
-            // Filtra estritamente pelo nome do cliente logado atualmente
             const myBookings = bookings.filter(b => b.clientName.toLowerCase() === currentClientName.toLowerCase());
 
             if (myBookings.length === 0) {
@@ -778,7 +762,11 @@
         }
 
         function updatePixStatus(id, newStatus) {
-            db.ref('bookings/' + id + '/pixStatus').set(newStatus);
+            const b = bookings.find(item => item.id === id);
+            if (b) {
+                b.pixStatus = newStatus;
+                saveData();
+            }
         }
 
         function calculateRevenue() {
@@ -789,7 +777,8 @@
 
         function deleteBooking(id) {
             if (confirm('Deseja realmente remover este agendamento?')) {
-                db.ref('bookings/' + id).remove();
+                bookings = bookings.filter(b => b.id !== id);
+                saveData();
             }
         }
 
@@ -807,7 +796,8 @@
                 photo: photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
             };
 
-            db.ref('barbers/' + barberId).set(newBarber);
+            barbers.push(newBarber);
+            saveData();
 
             document.getElementById('newBarberName').value = '';
             document.getElementById('newBarberSpec').value = '';
@@ -843,7 +833,8 @@
                 return;
             }
             if (confirm('Remover este barbeiro da equipe?')) {
-                db.ref('barbers/' + id).remove();
+                barbers = barbers.filter(b => b.id !== id);
+                saveData();
             }
         }
     </script>
